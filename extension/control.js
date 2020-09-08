@@ -93,10 +93,12 @@ function clickNextBtn() {
     next_btn.click();
 }
 function upVolume() {
-    setVolume(getVolume() + 5);
+    if (document.hasFocus()) return ;
+    setVolume(getVolume() + 10);
 }
 function downVolume() {
-    setVolume(getVolume() - 5);
+    if (document.hasFocus()) return ;
+    setVolume(getVolume() - 10);
 }
 function startPlayList(playListIndex) {
     function clickPlayList() {
