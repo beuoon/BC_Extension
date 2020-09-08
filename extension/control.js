@@ -22,6 +22,16 @@ function moveTab(index) {
     document.getElementsByClassName('style-scope ytmusic-pivot-bar-renderer')[index].click();
 }
 
+function getVolume() {
+    return parseInt(document.getElementById('volume-slider').getAttribute('value'));
+}
+function setVolume(size) {
+    if (size < 0) size = 0;
+    if (size > 100) size = 100;
+
+    document.getElementById('volume-slider').setAttribute('value', size);
+}
+
 function getPlayList() {
     let playList = [];
     
@@ -82,6 +92,12 @@ function clickNextBtn() {
     let next_btn = document.getElementsByClassName('next-button')[0];
     next_btn.click();
 }
+function upVolume() {
+    setVolume(getVolume() + 5);
+}
+function downVolume() {
+    setVolume(getVolume() - 5);
+}
 function startPlayList(playListIndex) {
     function clickPlayList() {
         let playList = getPlayList();
@@ -134,6 +150,8 @@ function connect() {
         case "next":        clickNextBtn();         break;
         case "start":       startPlayList(msg[1]);  break;
         case "start_mix":   startMix();             break;
+        case "volume_down": downVolume();           break;
+        case "volume_up":   upVolume();             break;
         case "pause":
             {
                 if (checkIsPlaying())
