@@ -55,6 +55,7 @@ function getMix() {
 async function checkExistMix() {
     let bFinished = false;
     let bExist = false;
+    let maxLoopCnt = 100;
 
     function checkMix() {
         let mix = getMix();
@@ -73,7 +74,7 @@ async function checkExistMix() {
         moveTab(TAB_HOME);
     checkTab();
 
-    while (!bFinished)
+    for (let i = 0; i < maxLoopCnt && !bFinished; i++)
         await sleep(100);
 
     return bExist;
