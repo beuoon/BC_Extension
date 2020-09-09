@@ -78,7 +78,7 @@ function checkExistMix() {
         
         let mix = getMix();
         bExist = mix != null;
-    
+        
         resolve(bExist);
     });
 }
@@ -135,6 +135,12 @@ async function startMix() {
     let mixBtn = mix.getElementsByClassName('icon style-scope ytmusic-play-button-renderer')[0];
     mixBtn.click();
 }
+async function startMixIfExist() {
+    let bExistMix = await checkExistMix();
+
+    if (bExistMix)
+        startMix();
+}
 async function startDefault() {
     let bExistMix = await checkExistMix();
 
@@ -153,12 +159,7 @@ function connect() {
         case "prev":        clickPrevBtn();         break;
         case "next":        clickNextBtn();         break;
         case "start":       startPlayList(msg[1]);  break;
-        case "start_mix":
-            {
-                if (checkExistMix())
-                    startMix();
-                break;
-            }
+        case "start_mix":   startMixIfExist();      break;
         case "volume_down": downVolume();           break;
         case "volume_up":   upVolume();             break;
         case "repeat":      clickRepeatBtn();       break;
