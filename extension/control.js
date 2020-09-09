@@ -62,7 +62,8 @@ function getPlayList() {
 function getMix() {
     let renderer = document.getElementsByClassName('yt-simple-endpoint image-wrapper style-scope ytmusic-two-row-item-renderer');
     for (let i = 0; i < renderer.length; i++) {
-        if (renderer[i].getAttribute('title') == '내 믹스')
+        let title = renderer[i].getAttribute('title');
+        if (title == '내 믹스' || title == 'Your Mix')
             return renderer[i];
     }
     return null;
