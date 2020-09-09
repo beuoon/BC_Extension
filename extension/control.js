@@ -104,6 +104,14 @@ function downVolume() {
     if (document.hasFocus()) return ;
     setVolume(getVolume() - 10);
 }
+function clickRepeatBtn() {
+    let repeatBtn = document.getElementById('expand-repeat');
+    repeatBtn.click();
+}
+function clickShuffleBtn() {
+    let shuffleBtn = document.getElementById('expand-shuffle');
+    shuffleBtn.click();
+}
 async function startPlayList(playListIndex) {
     if (!checkIsCurrentTab(TAB_STORAGE)) {
         let bMoved = await moveTab(TAB_STORAGE);
@@ -153,6 +161,8 @@ function connect() {
             }
         case "volume_down": downVolume();           break;
         case "volume_up":   upVolume();             break;
+        case "repeat":      clickRepeatBtn();       break;
+        case "shuffle":     clickShuffleBtn();      break;
         case "pause":
             {
                 if (checkIsPlaying())
