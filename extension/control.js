@@ -85,16 +85,16 @@ function checkExistMix() {
 
 // 조작
 function clickPrevBtn() {
-    let prev_btn = document.getElementsByClassName('previous-button')[0];
-    prev_btn.click();
+    let prevBtn = document.getElementsByClassName('previous-button')[0];
+    prevBtn.click();
 }
 function clickPauseBtn() {
-    let pause_btn = document.getElementsByClassName('play-pause-button')[0];
-    pause_btn.click();
+    let pauseBtn = document.getElementsByClassName('play-pause-button')[0];
+    pauseBtn.click();
 }
 function clickNextBtn() {
-    let next_btn = document.getElementsByClassName('next-button')[0];
-    next_btn.click();
+    let nextBtn = document.getElementsByClassName('next-button')[0];
+    nextBtn.click();
 }
 function upVolume() {
     if (document.hasFocus()) return ;
@@ -114,8 +114,8 @@ async function startPlayList(playListIndex) {
     if (playListIndex < 0 || playListIndex >= playList.length)
         return ;
     
-    let playList_btn = playList[playListIndex].getElementsByClassName('icon style-scope ytmusic-play-button-renderer')[0];
-    playList_btn.click();
+    let playListBtn = playList[playListIndex].getElementsByClassName('icon style-scope ytmusic-play-button-renderer')[0];
+    playListBtn.click();
 }
 async function startMix() {
     if (!checkIsCurrentTab(TAB_HOME)) {
@@ -124,8 +124,8 @@ async function startMix() {
     }
 
     let mix = getMix();
-    let mix_btn = mix.getElementsByClassName('icon style-scope ytmusic-play-button-renderer')[0];
-    mix_btn.click();
+    let mixBtn = mix.getElementsByClassName('icon style-scope ytmusic-play-button-renderer')[0];
+    mixBtn.click();
 }
 async function startDefault() {
     let bExistMix = await checkExistMix();
