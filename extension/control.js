@@ -19,7 +19,22 @@ function checkIsCurrentTab(index) {
     return status == "true";
 }
 function moveTab(index) {
-    document.getElementsByClassName('style-scope ytmusic-pivot-bar-renderer')[index].click();
+    return new Promise(async function(resolve) {
+        document.getElementsByClassName('style-scope ytmusic-pivot-bar-renderer')[index].click();
+
+        let MAX_LOOP_CNT = 100;
+        let bMoved = false;
+
+        for (let i = 0; i < MAX_LOOP_CNT; i++) {
+            if (checkIsCurrentTab(index)) {
+                bMoved = true;
+                break;
+            }
+            await sleep(100);
+        }
+
+        resolve(bMoved);
+    });
 }
 
 function getVolume() {
@@ -52,32 +67,20 @@ function getMix() {
     }
     return null;
 }
-async function checkExistMix() {
-    let bFinished = false;
-    let bExist = false;
-    let maxLoopCnt = 100;
-
-    function checkMix() {
+function checkExistMix() {
+    return new Promise(async function(resolve) {
+        let bExist = false;
+    
+        if (!checkIsCurrentTab(TAB_HOME)) {
+            let bMoved = await moveTab(TAB_HOME);
+            if (!bMoved) resolve(false);
+        }
+        
         let mix = getMix();
         bExist = mix != null;
-        bFinished = true;
-        return true;
-    }
-    function checkTab() {
-        if (checkIsCurrentTab(TAB_HOME))
-            setTimeout(checkMix, 100);
-        else
-            setTimeout(checkTab, 100);
-    }
-
-    if (!checkIsCurrentTab(TAB_HOME))
-        moveTab(TAB_HOME);
-    checkTab();
-
-    for (let i = 0; i < maxLoopCnt && !bFinished; i++)
-        await sleep(100);
-
-    return bExist;
+    
+        resolve(bExist);
+    });
 }
 
 // 조작
@@ -101,46 +104,36 @@ function downVolume() {
     if (document.hasFocus()) return ;
     setVolume(getVolume() - 10);
 }
-function startPlayList(playListIndex) {
-    function clickPlayList() {
-        let playList = getPlayList();
-        if (playListIndex < 0 || playListIndex >= playList.length)
-            return ;
-        
-        let playList_btn = playList[playListIndex].getElementsByClassName('icon style-scope ytmusic-play-button-renderer')[0];
-        playList_btn.click();
-    }
-    function checkTab() {
-        if (checkIsCurrentTab(TAB_STORAGE))
-            setTimeout(clickPlayList, 100);
-        else
-            setTimeout(checkTab, 100);
+async function startPlayList(playListIndex) {
+    if (!checkIsCurrentTab(TAB_STORAGE)) {
+        let bMoved = await moveTab(TAB_STORAGE);
+        if (!bMoved) return ;
     }
     
-    if (!checkIsCurrentTab(TAB_STORAGE))
-        moveTab(TAB_STORAGE);
-    checkTab();
+    let playList = getPlayList();
+    if (playListIndex < 0 || playListIndex >= playList.length)
+        return ;
+    
+    let playList_btn = playList[playListIndex].getElementsByClassName('icon style-scope ytmusic-play-button-renderer')[0];
+    playList_btn.click();
 }
-function startMix() {
-    checkExistMix().then(function(result) {
-        if (!result) return ;
-        
-        let mix = getMix();
-        let mix_btn = mix.getElementsByClassName('icon style-scope ytmusic-play-button-renderer')[0];
-        mix_btn.click();
-    });
+async function startMix() {
+    if (!checkIsCurrentTab(TAB_HOME)) {
+        let bMoved = await moveTab(TAB_HOME);
+        if (!bMoved) return ;
+    }
+
+    let mix = getMix();
+    let mix_btn = mix.getElementsByClassName('icon style-scope ytmusic-play-button-renderer')[0];
+    mix_btn.click();
 }
-function startDefault() {
-    checkExistMix().then(function(result) {
-        if (result) {
-            let mix = getMix();
-            let mix_btn = mix.getElementsByClassName('icon style-scope ytmusic-play-button-renderer')[0];
-            mix_btn.click();
-        }
-        else {
-            startPlayList(1);
-        }
-    });
+async function startDefault() {
+    let bExistMix = await checkExistMix();
+
+    if (bExistMix)
+        startMix();
+    else
+        startPlayList(1);
 }
 
 function connect() {
@@ -152,7 +145,12 @@ function connect() {
         case "prev":        clickPrevBtn();         break;
         case "next":        clickNextBtn();         break;
         case "start":       startPlayList(msg[1]);  break;
-        case "start_mix":   startMix();             break;
+        case "start_mix":
+            {
+                if (checkExistMix())
+                    startMix();
+                break;
+            }
         case "volume_down": downVolume();           break;
         case "volume_up":   upVolume();             break;
         case "pause":
