@@ -63,7 +63,7 @@ function getMix() {
     let renderer = document.getElementsByClassName('yt-simple-endpoint image-wrapper style-scope ytmusic-two-row-item-renderer');
     for (let i = 0; i < renderer.length; i++) {
         let title = renderer[i].getAttribute('title');
-        if (title == '내 믹스' || title == 'Your Mix')
+        if (title == '나만의 믹스' || title == 'My Supermix')
             return renderer[i];
     }
     return null;
