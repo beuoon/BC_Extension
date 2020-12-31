@@ -5,6 +5,27 @@ function sleep(ms) {
     return new Promise(resolve=>setTimeout(resolve, ms));
 }
 
+function blockAds() {
+    let blockScript = document.createElement('script');
+    blockScript.innerHTML = "\
+        function sleep(ms) {\
+            return new Promise(resolve=>setTimeout(resolve, ms));\
+        }\
+        \
+        async function blockAds() {\
+            while (typeof(window.AmazonVideoAds) === 'undefined')\
+                await sleep(100);\
+            \
+            window.AmazonVideoAds.prototype.fetchAds = function (url) {\
+                throw new AmazonVideoAdsError(ErrorType.AD_LOAD, AmazonErrorCode.AD_REQUEST_MISSING_REQUIRED_FIELD_ERROR, 'Ad Request URL can not be empty.');\
+            };\
+        }\
+        \
+        blockAds();\
+    ";
+    document.body.appendChild(blockScript);
+}
+
 function getVideo() {
     if (gVideo == null)
         gVideo = document.getElementsByTagName('video')[0];
@@ -39,7 +60,6 @@ function setVolume(size) {
     if (size > 1) size = 1;
 
     getVideo().volume = size;
-    
 }
 function getSpeed() {
     return getVideo().playbackRate;
@@ -49,7 +69,6 @@ function setSpeed(size) {
     if (size > 2) size = 2;
 
     getVideo().playbackRate = size;
-    
 }
 function getFollowChannelList() {
     // 팔로우 펼치기
@@ -127,4 +146,5 @@ function connect() {
     };
 }
 
+blockAds();
 connect();
