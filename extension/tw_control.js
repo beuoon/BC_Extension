@@ -39,8 +39,18 @@ function setVolume(size) {
     if (size > 1) size = 1;
 
     getVideo().volume = size;
+    
 }
+function getSpeed() {
+    return getVideo().playbackRate;
+}
+function setSpeed(size) {
+    if (size < 0.25) size = 0.25;
+    if (size > 2) size = 2;
 
+    getVideo().playbackRate = size;
+    
+}
 function getFollowChannelList() {
     // 팔로우 펼치기
     let showMoreBtn = null;
@@ -88,6 +98,12 @@ function upVolume() {
 function downVolume() {
     setVolume(getVolume() - 0.1);
 }
+function upSpeed() {
+    setSpeed(getSpeed() + 0.25);
+}
+function downSpeed() {
+    setSpeed(getSpeed() - 0.25);
+}
 
 function connect() {
     websocket = new WebSocket("ws://localhost:9002/");
@@ -96,8 +112,10 @@ function connect() {
         let msg = event.data.split(' ');
         switch (msg[0]) {
         case "start":       playFollowChannel(msg[1]);  break;
-        case "volume_down": downVolume();        break;
-        case "volume_up":   upVolume();          break;
+        case "volume_down": downVolume();       break;
+        case "volume_up":   upVolume();       break;
+        case "speed_down": downSpeed();        break;
+        case "speed_up":   upSpeed();          break;
         case "pause": {
                 if (checkIsPlaying())
                     clickPauseBtn();
