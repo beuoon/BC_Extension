@@ -123,6 +123,40 @@ function upSpeed() {
 function downSpeed() {
     setSpeed(getSpeed() - 0.25);
 }
+function clickTheatreMode() {
+    let theatreBtn = getButton('player-theatre-mode-button');
+
+    if (theatreBtn != null)
+        theatreBtn.click();
+}
+function extendChatting() {
+    let chattingExtendBtn = getButton('right-column__toggle-collapse-btn');
+
+    if (chattingExtendBtn != null)
+        chattingExtendBtn.click();
+}
+function backward() {
+    let video = getVideo();
+
+    if (video.currentTime - 5 < 0)
+        video.currentTime = 1;
+    else
+        video.currentTime -= 5;
+}
+function forward() {
+    let video = getVideo();
+
+    if (video.currentTime != -1)
+        video.currentTime += 5;
+    
+    if (video.buffered.length > 0) {
+        let lastTime = video.buffered.end(video.buffered.length-1);
+        if (video.currentTime > lastTime)
+            video.currentTime = -1;
+    }
+    else
+        video.currentTime = -1;
+}
 
 function connect() {
     websocket = new WebSocket("ws://localhost:9002/");
@@ -130,11 +164,15 @@ function connect() {
     websocket.onmessage = function (event) {
         let msg = event.data.split(' ');
         switch (msg[0]) {
-        case "start":       playFollowChannel(msg[1]);  break;
-        case "volume_down": downVolume();       break;
-        case "volume_up":   upVolume();       break;
-        case "speed_down": downSpeed();        break;
-        case "speed_up":   upSpeed();          break;
+        case "start":           playFollowChannel(msg[1]);  break;
+        case "volume_down":     downVolume();               break;
+        case "volume_up":       upVolume();                 break;
+        case "speed_down":      downSpeed();                break;
+        case "speed_up":        upSpeed();                  break;
+        case "theatre_mode":    clickTheatreMode();         break;
+        case "extend_chatting": extendChatting();           break;
+        case "backward":        backward();                 break;
+        case "forward":         forward();                  break;
         case "pause": {
                 if (checkIsPlaying())
                     clickPauseBtn();
