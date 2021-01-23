@@ -184,5 +184,5 @@ function connect() {
     };
 }
 
-blockAds();
+// blockAds();
 connect();
