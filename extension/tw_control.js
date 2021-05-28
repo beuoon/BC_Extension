@@ -77,24 +77,15 @@ function getFollowChannelList() {
         showMoreBtn.click();
     
     // 팔로우 채널 목록 가져오기
-    let followGroup = null;
-    let groups = document.getElementsByClassName('tw-relative tw-transition-group');
-    for (let i = 0; i < groups.length; i++) {
-        if (groups[i].parentElement.getAttribute('aria-label') == '팔로우 중인 채널') {
-            followGroup = groups[i];
-        }   
-    }
-    if (followGroup == null)
-        return [];
+    let followChannelList = [];
 
-    // 채널 선택하기
-    let channelList = [];
-    for (let i = 0; i < followGroup.childElementCount; i++) {
-        let channel = followGroup.children[i].children[0].children[0].children[0];
-        channelList.push(channel);
+    let channels = document.getElementsByClassName('side-nav-card__link tw-link');
+    for (let i = 0; i < channels.length; i++) {
+        if (channels[i].getAttribute('data-test-selector') == 'followed-channel')
+            followChannelList.push(channels[i]);
     }
     
-    return channelList;
+    return followChannelList;
 }
 
 // 조작
