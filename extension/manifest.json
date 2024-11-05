@@ -9,11 +9,11 @@
     "content_scripts": [
         {
             "matches": ["https://music.youtube.com/*"],
-            "js": ["ym_control.js"]
+            "js": ["control/ym_control.js"]
         },
         {
             "matches": ["https://www.twitch.tv/*"],
-            "js": ["tw_control.js"]
+            "js": ["control/tw_control.js"]
         }
     ]
 }
